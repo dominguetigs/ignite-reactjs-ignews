@@ -1,4 +1,4 @@
-import { Casefold, Collection, Create, Get, Index, Match, Replace, Select } from 'faunadb';
+import { Collection, Create, Get, Index, Match, Replace, Select } from 'faunadb';
 
 import { fauna } from '../../../services/fauna';
 import { stripe } from '../../../services/stripe';
