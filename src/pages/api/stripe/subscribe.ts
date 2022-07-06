@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { Casefold, Collection, Get, Index, Match, Ref, Update } from 'faunadb';
 
-import { fauna } from '../../services/fauna';
-import { stripe } from '../../services/stripe';
+import { fauna } from '../../../services/fauna';
+import { stripe } from '../../../services/stripe';
 
 type User = {
   ref: {
