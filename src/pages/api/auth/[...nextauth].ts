@@ -1,4 +1,16 @@
-import { Casefold, Collection, Create, Exists, Get, If, Index, Match, Not } from 'faunadb';
+import {
+  Casefold,
+  Collection,
+  Create,
+  Exists,
+  Get,
+  If,
+  Index,
+  Intersection,
+  Match,
+  Not,
+  Select,
+} from 'faunadb';
 
 import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
@@ -18,6 +30,32 @@ export default NextAuth({
     }),
   ],
   callbacks: {
+    async session({ session }) {
+      try {
+        const matchUserByEmail = Match(Index('user_by_email'), Casefold(session.user.email));
+
+        const matchSubscriptionByUserRef = Match(
+          Index('subscription_by_user_ref'),
+          Select('ref', Get(matchUserByEmail))
+        );
+
+        const matchSubscriptionByStatus = Match(Index('subscription_by_status'), 'active');
+
+        const userActiveSubscription = await fauna.query(
+          Get(Intersection([matchSubscriptionByUserRef, matchSubscriptionByStatus]))
+        );
+
+        return {
+          ...session,
+          activeSubscription: userActiveSubscription,
+        };
+      } catch {
+        return {
+          ...session,
+          activeSubscription: null,
+        };
+      }
+    },
     async signIn({ user: { email } }) {
       const matchByIndex = Match(Index('user_by_email'), Casefold(email));
 
