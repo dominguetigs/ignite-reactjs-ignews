@@ -1,21 +1,9 @@
-import {
-  Casefold,
-  Collection,
-  Create,
-  Exists,
-  Get,
-  If,
-  Index,
-  Intersection,
-  Match,
-  Not,
-  Select,
-} from 'faunadb';
+import { Casefold, Collection, Create, Exists, Get, If, Index, Intersection, Match, Not, Select } from 'faunadb';
 
 import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 
-import { fauna } from '../../../services/fauna';
+import { fauna } from '../../services/fauna';
 
 export default NextAuth({
   providers: [
@@ -61,11 +49,7 @@ export default NextAuth({
 
       try {
         await fauna.query(
-          If(
-            Not(Exists(matchByIndex)),
-            Create(Collection('users'), { data: { email } }),
-            Get(matchByIndex)
-          )
+          If(Not(Exists(matchByIndex)), Create(Collection('users'), { data: { email } }), Get(matchByIndex))
         );
         return true;
       } catch {
