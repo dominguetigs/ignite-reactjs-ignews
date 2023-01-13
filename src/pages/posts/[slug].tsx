@@ -35,7 +35,7 @@ export default function Post({ post }: PostProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
-  const session = await getSession({ req });
+  const session = (await getSession({ req })) as any;
   const { slug } = params;
 
   if (!session?.activeSubscription) {
